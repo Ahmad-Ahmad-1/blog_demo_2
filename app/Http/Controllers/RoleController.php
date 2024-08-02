@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Http\Requests\Role\RoleStoreRequest;
 use App\Http\Requests\Role\RoleUpdateRequest;
-use  Illuminate\Routing\Controllers\HasMiddleware;
-use  Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -27,7 +28,7 @@ class RoleController extends Controller implements HasMiddleware
     public function create()
     {
         return view('roles.create', [
-            'permissions' => Permission::all(['id', 'name'])->toArray()
+            'permissions' => Permission::pluck('name')->toArray(),
         ]);
     }
 
@@ -37,7 +38,7 @@ class RoleController extends Controller implements HasMiddleware
 
         $role->syncPermissions($request->safe()->only('permissions'));
 
-        return back()->with('Role Creation Success', 'Role has been created successfully');
+        return back()->with('status', 'Role has been created successfully');
     }
 
     public function edit(Role $role)
@@ -46,8 +47,8 @@ class RoleController extends Controller implements HasMiddleware
             'roles.edit',
             [
                 'role' => $role,
-                'allPermissions' => Permission::all(['id', 'name'])->toArray(),
-                'rolePermissions' => $role->getAllPermissions()->pluck('id')->toArray(),
+                'allPermissions' => Permission::pluck('name')->toArray(),
+                'rolePermissions' => $role->getAllPermissions()->pluck('name')->toArray(),
             ]
         );
     }
@@ -58,14 +59,23 @@ class RoleController extends Controller implements HasMiddleware
 
         $role->syncPermissions($request->safe()->only('permissions'));
 
-        return back()->with('Role Update Success', 'Role has been updated successfully');
+        return back()->with('status', 'Role has been updated successfully');
     }
 
     public function destroy(Role $role)
     {
         $role->delete();
 
-        return to_route('roles.index')->with('Role Deletion Success', 'Role has been deleted successfully');
+        return to_route('roles.index')->with('status', 'Role has been deleted successfully');
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->input('search');
+
+        $roles = Role::where('name', 'like', "%$search%")->paginate(5);
+
+        return view('roles.search-results', ['roles' => $roles]);
     }
 
     public static function middleware()

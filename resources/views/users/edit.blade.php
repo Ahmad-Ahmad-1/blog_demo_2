@@ -1,4 +1,7 @@
-<x-app-layout title="{{ $user->name }}">
+<x-app-layout title="Edit {{ $user->name }}">
+
+    <x-flash-messages type="success" class="w-50" />
+
     <div class="card m-auto mt-3 w-50">
         <div class="card-body">
 
@@ -8,8 +11,7 @@
 
                 <div>
                     <label for="name" class="h4">Name</label>
-                    <x-text-input name="name" class="form-control @error('name') is-invalid @enderror"
-                        value="{{ $user->name }}" />
+                    <x-text-input name="name" class="form-control" value="{{ $user->name }}" />
                     <x-input-error :messages="$errors->get('name')" />
                 </div>
 

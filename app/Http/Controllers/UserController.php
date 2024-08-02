@@ -6,13 +6,14 @@ use App\Http\Requests\User\UserUpdateRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller implements HasMiddleware
 {
     public function index()
     {
-        $users = User::paginate(5);
+        $users = User::latest()->paginate(5);
 
         return view('users.index', ['users' => $users]);
     }
@@ -53,10 +54,25 @@ class UserController extends Controller implements HasMiddleware
     public function destroy()
     {
         // Maybe we'll return to a URL?
-        return to_route('users.index');
+        return to_route('users.index')->with('User Deletion Success', 'User has been deleted successfully');
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->input('search');
+
+        $users = User::where('name', 'like', "%$search%")->paginate(5);
+
+        return view('users.search-results', ['users' => $users]);
     }
 
     public static function middleware()
     {
+        return [
+            new Middleware('permission:Edit User|Delete User', only: ['index', 'show']),
+            new Middleware('permission:Edit User', only: ['edit', 'update']),
+            new Middleware('permission:Delete User', only: ['destroy'])
+        ];
     }
 }
+

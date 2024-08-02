@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use Illuminate\Http\Request;
 use App\Http\Requests\Post\PostStoreRequest;
 use App\Http\Requests\Post\PostUpdateRequest;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Support\Facades\Session;
 
 class PostController extends Controller implements HasMiddleware
 {
@@ -47,7 +49,7 @@ class PostController extends Controller implements HasMiddleware
                 ->toMediaCollection('imgs');
         }
 
-        return to_route('posts.my_posts')->with('status', 'Post Has been created successfully');
+        return to_route('posts.my_posts')->with('status', ['Post Has been created successfully']);
     }
 
     public function show(Post $post)
@@ -73,14 +75,23 @@ class PostController extends Controller implements HasMiddleware
                 ->toMediaCollection('imgs');
         }
 
-        return to_route('posts.show', [$post->id]);
+        return to_route('posts.show', [$post->id])->with('status', 'Post Updated Successfully');
     }
 
-    public function destroy(Post $post)
+    public function destroy(Request $request, Post $post)
     {
         $post->delete();
 
-        return to_route(request()->route('redirect'))->with('status', 'Post has been deleted successfully');
+        return to_route($request->route('redirect'))->with('status', 'Post has been deleted successfully');
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->input('search');
+
+        $posts = Post::where('title', 'like', "%$search%")->paginate(5);
+
+        return view('posts.search-results', ['posts' => $posts]);
     }
 
     public static function middleware()
@@ -92,19 +103,3 @@ class PostController extends Controller implements HasMiddleware
         ];
     }
 }
-
-/*
-    - Laravel Blade files naming convention:
-
-      * While there is no strict naming convention for Blade files you can notice the following:
-        - It's very common for a view file to have the same name as the function it calls it.
-        - It's very common also to have route name in the form (resource.function).
-        - and function names are in camelCase so it's good to have your views named in it, so
-          your naming will be more consistent across your project.
-        - Spatie recommends this approach.
-
-      * You can also stick with Laravel's default naming convention for blade files which
-        is kebab-case (see Breeze scaffolding, this is what Taylor does anyway!).
-
-
-*/

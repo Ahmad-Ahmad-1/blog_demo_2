@@ -15,7 +15,7 @@
             <div class="d-flex">
                 <!-- Navigation Links -->
                 @auth
-                    @canany('Create Post|Edit Post|Delete Post')
+                    @canany(['Create Post', 'Edit Post', 'Delete Post'])
                         <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                             <x-nav-link :href="route('posts.create')" :active="request()->routeIs('posts.create')">
                                 {{ __('Create Post') }}
@@ -29,13 +29,13 @@
                         </div>
                     @endcanany
 
-                    @canany('Create Role|Edit Role|Update Role')
+                    @role('Super Admin')
                         <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                             <x-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.index')">
                                 {{ __('Manage Roles') }}
                             </x-nav-link>
                         </div>
-                    @endcanany
+                    @endrole
 
                     @canany(['Edit User', 'Delete User'])
                         <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">

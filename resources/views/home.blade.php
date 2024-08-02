@@ -1,5 +1,7 @@
 <x-app-layout title="Home">
 
+    <x-search :action="route('posts.search')" placeholder="Search Posts" />
+
     <div class="mt-4 mb-4 text-center h4">
         <span class="bg-black rounded fw-bold text-white p-2">Latest Posts</span>
     </div>

@@ -1,10 +1,6 @@
 <x-app-layout title="Create Role">
 
-    @if (session('Role Creation Success'))
-        <div class="alert alert-success w-50 m-auto mt-3">
-            {{ session('Role Creation Success') }}
-        </div>
-    @endif
+    <x-flash-messages type="success" class="w-50" />
 
     <div class="card w-50 m-auto mt-3">
 
@@ -14,47 +10,30 @@
                 @csrf
 
                 <div>
-                    <span class="h4">Role:</span>
-                    <x-text-input name="name" class="mt-2 mb-2 form-control @error('name') is-invalid @enderror"
-                        value="{{ @old('name') }}" />
-
-                    @error('name')
-                        <span class="text-danger">
-                            {{ $message }}
-                        </span>
-                    @enderror
+                    <label for="name" class="h4">Role:</label>
+                    <x-text-input name="name" id="name" class="mt-2 mb-2 form-control" value="{{ @old('name') }}" />
+                    <x-input-error :messages="$errors->get('name')" />
                 </div>
 
                 <div>
-                    <h5 class="card-title fw-bold h4 mb-2 mt-2">
-                        <div>Permissions:</div>
-                    </h5>
+
+                    <div class="fw-bold h4 mb-2 mt-2">Permissions:</div>
 
                     @foreach ($permissions as $permission)
                         <div class="p-2">
-                            <input type="checkbox" name="permissions[]" value="{{ $permission['name'] }}"
-                                id="{{ $permission['name'] }}">
-                            <label for="{{ $permission['name'] }}">{{ $permission['name'] }}</label>
+                            <input type="checkbox" name="permissions[]" value="{{ $permission }}"
+                                id="{{ $permission }}">
+                            <label for="{{ $permission }}">{{ $permission }}</label>
                         </div>
                     @endforeach
 
-                    @error('permissions')
-                        <span class="text-danger">
-                            {{ $message }}
-                        </span>
-                    @enderror
+                    <x-input-error :messages="$errors->get('permissions')" />
 
                 </div>
 
                 <button type="submit" class="btn btn-success mt-3">Create</button>
             </form>
         </div>
-
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-success">{{ $error }}</div>
-            @endforeach
-        @endif
 
     </div>
 </x-app-layout>

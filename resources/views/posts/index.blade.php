@@ -1,8 +1,6 @@
 <x-app-layout title="All Posts">
 
-    @if (session('status'))
-        <div class="alert alert-success w-75 m-auto mt-3 fw-bold">{{ session('status') }}</div>
-    @endif
+    <x-search :action="route('posts.search')" placeholder="Search Posts" />
 
     <table class="table w-75 m-auto mt-3 w-fit p-2">
         <thead class="table-dark">
@@ -29,7 +27,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="4">
+                    <td colspan="5">
                         <div class="text-danger">
                             No Posts Yet!
                         </div>

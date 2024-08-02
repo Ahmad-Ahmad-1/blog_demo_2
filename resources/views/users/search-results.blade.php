@@ -1,4 +1,4 @@
-<x-app-layout title="Manage Users">
+<x-app-layout title="Search Results">
 
     <x-search :action="route('users.search')" placeholder="Search Users" />
 
@@ -15,7 +15,7 @@
             </thead>
             <tbody>
 
-                @foreach ($users as $user)
+                @forelse ($users as $user)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $user->name }}</td>
@@ -53,7 +53,15 @@
                             @endif
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="5">
+                            <span class="text-danger">
+                                There is no user that matches your search!
+                            </span>
+                        </td>
+                    </tr>
+                @endforelse
 
             </tbody>
         </table>

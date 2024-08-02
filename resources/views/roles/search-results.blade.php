@@ -1,6 +1,4 @@
-<x-app-layout title="Manage Roles">
-
-    <x-flash-messages type="success" class="w-50" />
+<x-app-layout title="Search Results">
 
     <x-search :action="route('roles.search')" placeholder="Search Roles" />
 
@@ -20,7 +18,7 @@
             </thead>
             <tbody>
 
-                @foreach ($roles as $role)
+                @forelse ($roles as $role)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>
@@ -30,7 +28,15 @@
                             <a href="{{ route('roles.show', $role->id) }}" class="btn btn-primary">Show</a>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="3">
+                        <span class="text-danger">
+                            There is no Role that matches your search!
+                        </span>
+                    </td>
+                </tr>
+                @endforelse
 
             </tbody>
         </table>

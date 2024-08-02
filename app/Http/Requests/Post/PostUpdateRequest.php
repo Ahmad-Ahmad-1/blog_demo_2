@@ -9,7 +9,7 @@ class PostUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'min:3', 'max:50', 'unique:posts,title'],
+            'title' => ['required', 'min:3', 'max:50'],
             'caption' => ['required', 'string'],
             'img' => ['nullable', 'image']
         ];

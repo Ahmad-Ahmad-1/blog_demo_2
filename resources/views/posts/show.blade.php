@@ -1,5 +1,9 @@
 <x-app-layout title="{{ $post->title }}">
 
+    @if (session('status'))
+        <div class="alert alert-success w-50 m-auto mt-3">{{ session('status') }}</div>
+    @endif
+
     <div class="card w-50 m-auto mt-3">
 
         @if ($post->getFirstMediaUrl('imgs'))
